@@ -59,10 +59,8 @@
 #include <diagnostic_updater/diagnostic_updater.hpp>
 #include <mrpt_msgs/msg/generic_observation.hpp>
 #include <rclcpp/rclcpp.hpp>
-#include <sensor_msgs/msg/image.hpp>
 #include <sensor_msgs/msg/imu.hpp>
 #include <sensor_msgs/msg/magnetic_field.hpp>
-#include <sensor_msgs/msg/nav_sat_fix.hpp>
 
 namespace mrpt_sensors
 {
@@ -129,8 +127,6 @@ class GenericSensorNode : public rclcpp::Node
   rclcpp::Publisher<sensor_msgs::msg::Imu>::SharedPtr imu_publisher_;
   /// IMUs with a magnetometer: `<publish_topic>/mag`
   rclcpp::Publisher<sensor_msgs::msg::MagneticField>::SharedPtr mag_publisher_;
-  rclcpp::Publisher<sensor_msgs::msg::NavSatFix>::SharedPtr gps_publisher_;
-  std::map<std::string, rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr> images_publisher_;
   std::shared_ptr<tf2_ros::TransformBroadcaster> tf_bc_;  //!< For sensor-specific transforms
   std::shared_ptr<tf2_ros::StaticTransformBroadcaster> tf_static_bc_;  //!< The sensor pose
 
@@ -142,7 +138,7 @@ class GenericSensorNode : public rclcpp::Node
   const std::vector<mrpt::hwdrivers::CGenericSensor::Ptr>& sensors() const { return sensors_; }
 
   /// Get a sensor by index, cast to the specified type
-  /// @tparam T The sensor type to cast to (e.g., mrpt::hwdrivers::CGPSInterface)
+  /// @tparam T The sensor type to cast to (e.g., mrpt::hwdrivers::CTaoboticsIMU)
   /// @param index Sensor index (0-based)
   /// @return Pointer to the sensor, or nullptr if index invalid or cast fails
   template <typename T>
@@ -191,7 +187,6 @@ class GenericSensorNode : public rclcpp::Node
 
   void process_observation(const mrpt::obs::CObservation::Ptr& o);
 
-  void process(const mrpt::obs::CObservationGPS& o);
   void process(const mrpt::obs::CObservationIMU& o);
 
   // ----------------- Diagnostics -----------------

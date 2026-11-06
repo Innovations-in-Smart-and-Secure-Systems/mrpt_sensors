@@ -39,7 +39,6 @@
 
 #include <mrpt/config/CConfigFile.h>
 #include <mrpt/config/CConfigFileMemory.h>
-#include <mrpt/obs/CObservationGPS.h>
 #include <mrpt/obs/CObservationIMU.h>
 #include <mrpt/serialization/CArchive.h>
 #include <mrpt/system/filesystem.h>
@@ -48,10 +47,7 @@
 #include <diagnostic_msgs/msg/diagnostic_status.hpp>
 
 // MRPT -> ROS bridge:
-#include <mrpt/ros2bridge/gps.h>
-#include <mrpt/ros2bridge/image.h>
 #include <mrpt/ros2bridge/imu.h>
-#include <mrpt/ros2bridge/point_cloud2.h>
 #include <mrpt/ros2bridge/pose.h>
 #include <mrpt/ros2bridge/time.h>
 
@@ -459,11 +455,7 @@ void GenericSensorNode::process_observation(const mrpt::obs::CObservation::Ptr& 
   }
 
   // specific ROS messages:
-  if (auto oGPS = std::dynamic_pointer_cast<mrpt::obs::CObservationGPS>(o); oGPS)
-  {
-    process(*oGPS);
-  }
-  else if (auto oIMU = std::dynamic_pointer_cast<mrpt::obs::CObservationIMU>(o); oIMU)
+  if (auto oIMU = std::dynamic_pointer_cast<mrpt::obs::CObservationIMU>(o); oIMU)
   {
     process(*oIMU);
   }
@@ -484,25 +476,6 @@ std_msgs::msg::Header GenericSensorNode::create_header(const mrpt::obs::CObserva
   }
 
   return header;
-}
-
-void GenericSensorNode::process(const mrpt::obs::CObservationGPS& o)
-{
-  ensure_publisher_exists<sensor_msgs::msg::NavSatFix>(gps_publisher_);
-
-#if 0
-    std::stringstream ss;
-    o.getDescriptionAsText(ss);
-    RCLCPP_DEBUG_STREAM(this->get_logger(), ss.str());
-#endif
-
-  auto header = create_header(o);
-
-  auto msg = sensor_msgs::msg::NavSatFix();
-  bool valid = mrpt::ros2bridge::toROS(o, header, msg);
-  if (!valid) return;
-
-  gps_publisher_->publish(msg);
 }
 
 void GenericSensorNode::process(const mrpt::obs::CObservationIMU& o)

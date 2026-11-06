@@ -37,7 +37,6 @@
 
 #include <mrpt/core/bits_math.h>  // square()
 #include <mrpt/obs/CObservationIMU.h>
-#include <mrpt/ros2bridge/image.h>
 
 #include <rclcpp/rclcpp.hpp>
 

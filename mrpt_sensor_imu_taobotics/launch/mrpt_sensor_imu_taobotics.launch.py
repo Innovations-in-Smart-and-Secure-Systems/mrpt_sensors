@@ -5,14 +5,20 @@ from launch_ros.actions import Node
 from launch.actions import DeclareLaunchArgument
 from launch.actions import GroupAction
 from launch_ros.actions import PushRosNamespace
-from launch.conditions import IfCondition
-import os
 
 
 def generate_launch_description():
-    namespace = 'taobotics'
+    namespace = LaunchConfiguration('namespace')
 
     ld = LaunchDescription([
+        DeclareLaunchArgument(
+            'namespace', default_value='taobotics',
+            description='Namespace of the IMU node and topics.'
+        ),
+        DeclareLaunchArgument(
+            'publish_sensor_pose_tf', default_value='true',
+            description='Publish the sensor mounting pose on /tf_static.'
+        ),
         # COMMON PARAMS TO ALL MRPT_SENSOR NODES:
         # --------------------------------------------
         # Declare an argument for the config file
@@ -113,7 +119,7 @@ def generate_launch_description():
             description="Logging level"
         ),
 
-        # Node to launch the mrpt_generic_sensor_node
+        # Taobotics IMU and optional magnetometer publisher
         Node(
             package='mrpt_sensor_imu_taobotics',
             executable='mrpt_sensor_imu_taobotics_node',
@@ -133,6 +139,7 @@ def generate_launch_description():
                 {'publish_topic': LaunchConfiguration('publish_topic')},
                 {'sensor_frame_id': LaunchConfiguration('sensor_frame_id')},
                 {'robot_frame_id': LaunchConfiguration('robot_frame_id')},
+                {'publish_sensor_pose_tf': LaunchConfiguration('publish_sensor_pose_tf')},
                 {'sensor_label': LaunchConfiguration('sensor_label')},
 
                 # ------------------------------------------------
@@ -156,7 +163,6 @@ def generate_launch_description():
     return LaunchDescription([GroupAction(
         actions=[
             PushRosNamespace(
-                # condition=IfCondition(use_namespace),
                 namespace=namespace),
             ld
         ])])
