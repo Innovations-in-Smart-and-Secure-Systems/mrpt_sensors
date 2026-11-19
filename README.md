@@ -21,17 +21,18 @@ history and may mention packages that are no longer present.
 ## Verified HFI-A9 configuration
 
 A Wildboar deployment using the HFI-A9 parser was verified with ROS 2 Humble.
-Its IMU data was published at approximately 100 Hz, and magnetic-field
-publishing was enabled when all three magnetic components were present in the
-MRPT observation. Use the actual device path, namespace, and frame IDs for each
-robot.
+In that configuration, the IMU and magnetic-field topics each published at
+approximately 166.6 Hz. Magnetic-field publishing was enabled when all three
+magnetic components were present in the MRPT observation. Rates can depend on
+the device configuration; measure them on the target robot. Use the actual
+device path, namespace, and frame IDs for each robot.
 
 | Setting | Value or convention |
 | --- | --- |
 | Sensor model | `hfi-a9` |
 | IMU topic | `/<namespace>/imu` (`sensor_msgs/msg/Imu`) |
 | Magnetic-field topic | `/<namespace>/imu/mag` (`sensor_msgs/msg/MagneticField`) |
-| Observed HFI-A9 IMU rate | Approximately 100 Hz |
+| Observed HFI-A9 IMU and magnetometer rate | Approximately 166.6 Hz |
 | Example sensor frame | `imu_link` |
 | Example parent frame | `box` |
 
